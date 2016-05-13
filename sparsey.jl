@@ -1,7 +1,7 @@
 module sparsey
 
 export idx
-export V
+export VHarm
 
 # Creates the spatial grid given maximum values and number of samples
 function SpatialGrid()
@@ -9,16 +9,17 @@ function SpatialGrid()
 end
 
 # Generate the potential operators along each respective dimension
-function V(Grid, Ng::Array{UInt64,1}, Omega::Array{Float64,1}, m::Float64)
+function VHarm(Grid, Ng::Array{Int64,1}, Omega::Array{Float64,1}, m::Float64)
 	dim = length(Ng)
-	V = zeros(dim,)
-	Vsp = spzeros(dim,max(Ng))
+	V = Array{Array{Float64}}(dim)
 	for ii = 1:dim
-		for jj = Ng[ii]
-			Vsp(jj) = 0.5*m*Grid[ii][jj]^2*Omega[ii]^2;
+		V[ii] = zeros(Ng[ii]);
+		for jj = 1:Ng[ii]
+			V[ii][jj] = 0.5*m*Grid[ii][jj]^2*Omega[ii]^2;
 		end
 	end
-	return Vsp
+	println(V)
+	return V
 end
  
 #Determines the 1d indexing to an N-d array
