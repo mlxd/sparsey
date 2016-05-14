@@ -3,6 +3,8 @@ module sparsey
 export idx
 export SpatialGrid
 export VHarm
+export indicesND
+export densify
 
 # Creates the spatial grid given maximum values and number of samples
 function SpatialGrid(Ng::Array{Int64,1},GridMax::Array{Float64,1},GridMin::Array{Float64,1})
@@ -24,8 +26,38 @@ function VHarm(Grid::Array{Array{Float64}}, Ng::Array{Int64,1}, Omega::Array{Flo
 			V[ii][jj] = 0.5*m*Grid[ii][jj]^2*Omega[ii]^2;
 		end
 	end
-	println(V)
 	return V
+end
+
+function densify(Ng::Array{Int64,1},Grid::Array{Array{Float64}})
+	idxMax = prod(Ng)
+	dim = length(Ng)
+	S = Array{Float64}(idxMax)
+	k = Grid[1]
+	for ii = 2:dim
+		k = kron(k,Grid[ii]) #Double check this. Not sure if it will work here
+	end
+	println(k)
+	return k
+end
+
+# Pass size of dimensions, and linear index, return i,j,k... value
+function indicesND(Ng::Array{Int64,1},linIdx::Int64)
+	dim = length(Ng)
+	slices = Array{Int64}(dim)
+	for ii = 1:dim
+		slices[ii] = prod(Ng[1:dim-ii+1])
+	end
+	sl = (floor(Integer,linIdx./slices))
+
+	idx = find(x-> x != 0,sl)
+	println(idx)
+
+	slp = prod(sl[idx])
+	println(slp)
+
+	r = linIdx % slp;
+	println(r)
 end
  
 #Determines the 1d indexing to an N-d array

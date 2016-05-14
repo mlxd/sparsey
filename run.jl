@@ -13,5 +13,8 @@ dim = 3
 gMax = [10.,7.,1.]
 gMin = [-10.,-4.,-1.]
 
-g = SpatialGrid(Ngx,gMax,gMin)
-VHarm(g,Ngx,[1.,1.,1.],1.)
+#g = SpatialGrid(Ngx,gMax,gMin)
+#V = VHarm(g,Ngx,[1.,1.,1.],1.)
+#densify([Ngx],V)
+
+indicesND([2,2,2],3)
