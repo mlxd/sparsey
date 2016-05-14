@@ -5,6 +5,23 @@ export SpatialGrid
 export VHarm
 export indicesND
 export densify
+export kronSum
+
+# Create diagonal using individual arrays from grid
+function kronSum(Ng::Array{Int64,1},Grid::Array{Array{Float64}})
+	dim = length(Ng)
+	spd = Array{SparseMatrixCSC{Float64,Int64}}(dim)
+	spe = Array{SparseMatrixCSC{Float64,Int64}}(dim)
+	for ii=1:(dim)
+		spd[ii] = spdiagm(Grid[ii],0,Ng[ii],Ng[ii])
+		spe[ii] = speye(Ng[ii])
+	end
+	for ii=2:dim
+		spd[1] = kron(spd[1],spe[ii]) + kron(spe[1],spd[ii])
+		spe[1] = speye(size(spd[1])[1])
+	end
+	return spd
+end
 
 # Creates the spatial grid given maximum values and number of samples
 function SpatialGrid(Ng::Array{Int64,1},GridMax::Array{Float64,1},GridMin::Array{Float64,1})
