@@ -6,8 +6,15 @@ export VHarm
 export indicesND
 export densify
 export kronSum
+export derivFD
+export l2d
 
-# Create diagonal using individual arrays from grid
+
+function diagNabbit(M::SparseMatrixCSC{Float64,Int64})
+	eigs(M,nev=10,which="SM")
+end
+
+# Create diagonal using individual arrays from grid. Reshape first dimension diagonal from output into N dimensional grid using Ng values if needed
 function kronSum(Ng::Array{Int64,1},Grid::Array{Array{Float64}})
 	dim = length(Ng)
 	spd = Array{SparseMatrixCSC{Float64,Int64}}(dim)
@@ -20,7 +27,65 @@ function kronSum(Ng::Array{Int64,1},Grid::Array{Array{Float64}})
 		spd[1] = kron(spd[1],spe[ii]) + kron(spe[1],spd[ii])
 		spe[1] = speye(size(spd[1])[1])
 	end
-	return spd
+	return spd[1]
+end
+
+
+function l2d(Ng::Array{Int64,1})
+	dim = length(Ng)
+	sp = speye(Ng[1])
+	E = sparse(2:Ng[1], 1:Ng[1]-1,1,Ng[1],Ng[1])
+	D = E+E' -2*sp;
+	K = kron(D,sp) + kron(sp,D)
+	return K
+end
+
+function laplacianFD(Ng::Array{Int64,1})
+	dim = length(Ng)
+	I = Array{Array{Float64}}(dim)
+	E = Array{Array{Float64}}(dim)
+	
+
+
+	Sp = speye(Ng[1])
+	
+
+
+
+
+
+	for ii=1:dim
+		#I[ii] = speye(prod(Ng[1:ii]))
+	#	E[ii] = sparse((2:Ng[ii]).*Ng[ii],(1:[Ng[ii]-1).*Ng[ii],1,prod(1:Ng[ii]),prod(1:Ng[ii]))
+	#	E[ii] += transpose(E[ii])
+	end
+	#sum[E] - dim*
+	#D = E+E'-2*I;
+end
+
+# Generate matrix for n-th derivative of m-th variable. To be finished.
+function derivFD(Ng::Array{Int64,1},Grid::Array{Float64},order::Int64)
+	dim = length(Ng)
+	D = []
+	for ii=1:dim
+		for jj=1:order
+			I = speye(Ng[ii])
+			stencil = sparse(2:Ng[ii],1:Ng[ii]-1,1,Ng[ii],Ng[ii])
+			stencil += transpose(stencil)
+			stencil -= 2*I
+			println(stencil)
+			if(jj==1)
+				println(kron(stencil,I))
+				println(kron(I,stencil))
+				D = kron(I,stencil)
+			elseif(jj==2)
+				D += kron(stencil,I)
+			else
+				D = kron(D,I) + kron(I,D)
+			end
+		end
+	end
+	return D
 end
 
 # Creates the spatial grid given maximum values and number of samples
@@ -46,19 +111,7 @@ function VHarm(Grid::Array{Array{Float64}}, Ng::Array{Int64,1}, Omega::Array{Flo
 	return V
 end
 
-function densify(Ng::Array{Int64,1},Grid::Array{Array{Float64}})
-	idxMax = prod(Ng)
-	dim = length(Ng)
-	S = Array{Float64}(idxMax)
-	k = Grid[1]
-	for ii = 2:dim
-		k = kron(k,Grid[ii]) #Double check this. Not sure if it will work here
-	end
-	println(k)
-	return k
-end
-
-# Pass size of dimensions, and linear index, return i,j,k... value
+#= Pass size of dimensions, and linear index, return i,j,k... value
 function indicesND(Ng::Array{Int64,1},linIdx::Int64)
 	dim = length(Ng)
 	slices = Array{Int64}(dim)
@@ -76,8 +129,9 @@ function indicesND(Ng::Array{Int64,1},linIdx::Int64)
 	r = linIdx % slp;
 	println(r)
 end
- 
-#Determines the 1d indexing to an N-d array
+=# 
+
+#= Determines the 1d indexing to an N-d array
 function idx(d::Array{Int64},ind::Array{Int64})
 	val = 0
 	N=length(d)
@@ -89,6 +143,21 @@ function idx(d::Array{Int64},ind::Array{Int64})
 		val *= d[ii+1]
 	end
 	return val+1
+end
+=#
+
+# Return prod(Ng) matrix of vectors in Grid
+function densify(Ng::Array{Int64,1},Grid::Array{Array{Float64}})
+	idxMax = prod(Ng)
+	dim = length(Ng)
+	
+end
+
+# Return prod(Ng) matrix from diagonal values in sparse spd
+function densify(Ng::Array{Int64,1},spd::SparseMatrixCSC{Float64,Int64})
+	idxMax = prod(Ng)
+	dim = length(Ng)
+	
 end
 
 end

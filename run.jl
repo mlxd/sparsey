@@ -1,26 +1,28 @@
 push!(LOAD_PATH,"/home/mlxd/prog/sparsey")
 using sparsey
+using PyPlot
 
-Ngx = [8,4,6]
-dim = 3
+Ngx = [100,100]
+dim = length(Ngx)
 
- g = Array{Array{Float64}}(dim)
- g[1] = collect(linspace(-10,10,Ngx[1]))
- g[2] = collect(linspace(-4,7,Ngx[2])) 
- g[3] = collect(linspace(-1,1,Ngx[3]))
-
-
-gMax = [10.,7.,1.]
-gMin = [-10.,-4.,-1.]
+gMax = [10.,10.]
+gMin = [-10.,-10.]
 
 g0 = SpatialGrid(Ngx,gMax,gMin)
-#V = VHarm(g,Ngx,[1.,1.,1.],1.)
-#densify([Ngx],V)
+V = VHarm(g0,Ngx,[1.,1.],1.)
 
-#indicesND([2,2,2],3)
+#densify([Ngx],V) #Convert sparse matrix of size prod(Ngx)^2 to dense matrix of size prod(Ngx). Alternatively, if given a vector of the values in each dimension, returns similarly N-d matrix/Arrays
+#indicesND(Ngx,3) #Given the dimensions Ngx of the system, and a linear index, returns the values of index in each respective dimension
 
-println("Kronit")
+VD=kronSum(Ngx,V) #Returns sparse diagonal matrix with linear indexed (lexicographical) values of the vectors V, with dimensions Ngx
 
-k=kronSum(Ngx,g)
-typeof(k)
-println(k[1])
+dx = abs(g0[1][1] - g0[1][2])
+KD = -0.5*l2d(Ngx)./dx^2
+
+H = VD + KD
+val,vec = eigs(H,nev=8,which="SM") #Calculate 8 of the smallest eigenvectors
+
+plot(val)
+#pcolor(reshape(vec[:,1],Ngx[1],Ngx[2]))
+#colorbar()
+show()
