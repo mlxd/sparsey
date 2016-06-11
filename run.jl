@@ -1,6 +1,8 @@
 push!(LOAD_PATH,"/home/mlxd/prog/sparsey")
 using sparsey
+Pkg.pin("PyPlot",v"2.1.1") #v2.2.0 doesn't work with current code.
 using PyPlot
+#using Gadfly
 
 Ngx = [100,100]
 dim = length(Ngx)
@@ -22,7 +24,19 @@ KD = -0.5*l2d(Ngx)./dx^2
 H = VD + KD
 val,vec = eigs(H,nev=8,which="SM") #Calculate 8 of the smallest eigenvectors
 
-plot(val)
-#pcolor(reshape(vec[:,1],Ngx[1],Ngx[2]))
-#colorbar()
-show()
+#Use Gadfly, if you'd like.
+#s = spy(reshape(abs(vec[:,1]).^2,Ngx[1],Ngx[2]))
+#draw(PNG("myplot.png", 30cm, 30cm), s)
+
+#plot(val)
+subplot(2,2,1)
+pcolor(reshape(abs(vec[:,1]).^2,Ngx[1],Ngx[2]))
+subplot(2,2,2)
+pcolor(reshape(abs(vec[:,2]).^2,Ngx[1],Ngx[2]))
+subplot(2,2,3)
+pcolor(reshape(abs(vec[:,3]).^2,Ngx[1],Ngx[2]))
+subplot(2,2,4)
+pcolor(reshape(abs(vec[:,4]).^2,Ngx[1],Ngx[2]))
+PyPlot.show()
+
+Pkg.free("PyPlot")

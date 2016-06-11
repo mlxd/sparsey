@@ -9,7 +9,6 @@ export kronSum
 export derivFD
 export l2d
 
-
 function diagNabbit(M::SparseMatrixCSC{Float64,Int64})
 	eigs(M,nev=10,which="SM")
 end
@@ -44,11 +43,11 @@ function laplacianFD(Ng::Array{Int64,1})
 	dim = length(Ng)
 	I = Array{Array{Float64}}(dim)
 	E = Array{Array{Float64}}(dim)
-	
+
 
 
 	Sp = speye(Ng[1])
-	
+
 
 
 
@@ -129,7 +128,7 @@ function indicesND(Ng::Array{Int64,1},linIdx::Int64)
 	r = linIdx % slp;
 	println(r)
 end
-=# 
+=#
 
 #= Determines the 1d indexing to an N-d array
 function idx(d::Array{Int64},ind::Array{Int64})
@@ -150,14 +149,14 @@ end
 function densify(Ng::Array{Int64,1},Grid::Array{Array{Float64}})
 	idxMax = prod(Ng)
 	dim = length(Ng)
-	
+
 end
 
 # Return prod(Ng) matrix from diagonal values in sparse spd
 function densify(Ng::Array{Int64,1},spd::SparseMatrixCSC{Float64,Int64})
 	idxMax = prod(Ng)
 	dim = length(Ng)
-	
+
 end
 
 end
