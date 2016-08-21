@@ -1,6 +1,5 @@
 push!(LOAD_PATH,"/home/mlxd/prog/sparsey")
 using sparsey
-Pkg.pin("PyPlot",v"2.1.1") #v2.2.0 doesn't work with current code.
 using PyPlot
 #using Gadfly
 
@@ -38,5 +37,3 @@ pcolor(reshape(abs(vec[:,3]).^2,Ngx[1],Ngx[2]))
 subplot(2,2,4)
 pcolor(reshape(abs(vec[:,4]).^2,Ngx[1],Ngx[2]))
 PyPlot.show()
-
-Pkg.free("PyPlot")

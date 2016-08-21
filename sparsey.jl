@@ -39,28 +39,6 @@ function l2d(Ng::Array{Int64,1})
 	return K
 end
 
-function laplacianFD(Ng::Array{Int64,1})
-	dim = length(Ng)
-	I = Array{Array{Float64}}(dim)
-	E = Array{Array{Float64}}(dim)
-
-
-
-	Sp = speye(Ng[1])
-
-
-
-
-
-
-	for ii=1:dim
-		#I[ii] = speye(prod(Ng[1:ii]))
-	#	E[ii] = sparse((2:Ng[ii]).*Ng[ii],(1:[Ng[ii]-1).*Ng[ii],1,prod(1:Ng[ii]),prod(1:Ng[ii]))
-	#	E[ii] += transpose(E[ii])
-	end
-	#sum[E] - dim*
-	#D = E+E'-2*I;
-end
 
 # Generate matrix for n-th derivative of m-th variable. To be finished.
 function derivFD(Ng::Array{Int64,1},Grid::Array{Float64},order::Int64)
