@@ -29,7 +29,6 @@ function kronSum(Ng::Array{Int64,1},Grid::Array{Array{Float64}})
 	return spd[1]
 end
 
-
 function l2d(Ng::Array{Int64,1})
 	dim = length(Ng)
 	sp = speye(Ng[1])
@@ -38,7 +37,6 @@ function l2d(Ng::Array{Int64,1})
 	K = kron(D,sp) + kron(sp,D)
 	return K
 end
-
 
 # Generate matrix for n-th derivative of m-th variable. To be finished.
 function derivFD(Ng::Array{Int64,1},Grid::Array{Float64},order::Int64)
