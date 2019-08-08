@@ -1,14 +1,6 @@
-module Sparsey
-
-export SpatialGrid
-export VHarm
-export kronSum
-export l2d
-
-import SparseArrays
-import Arpack
-import LinearAlgebra
-import Plots
+using SparseArrays
+using LinearAlgebra
+using Arpack
 
 # Create diagonal using individual arrays from grid. 
 # Reshape first dimension diagonal from output into N dimensional grid using Ng values if needed
@@ -58,6 +50,4 @@ function VHarm(Grid::Array{Array{Float64}}, Ng::Array{Int64,1}, Omega::Array{Flo
         end
     end
     return V
-end
-
 end
